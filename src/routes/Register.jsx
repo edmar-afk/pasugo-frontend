@@ -3,12 +3,12 @@ import logo from "../assets/images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import Back from "../components/Back";
 import api from "../assets/api";
-
+import AlertPopup from "../components/AlertPopup";
 function Register() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
-    full_name: "", // ✅ added
+    full_name: "",
     username: "",
     email: "",
     password: "",
@@ -17,6 +17,7 @@ function Register() {
   });
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false); // ✅ State for modal
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,38 +63,7 @@ function Register() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // ✅ Custom alert + redirect on click or outside
-      const overlay = document.createElement("div");
-      overlay.style.position = "fixed";
-      overlay.style.top = "0";
-      overlay.style.left = "0";
-      overlay.style.width = "100%";
-      overlay.style.height = "100%";
-      overlay.style.backgroundColor = "rgba(0,0,0,0.5)";
-      overlay.style.display = "flex";
-      overlay.style.justifyContent = "center";
-      overlay.style.alignItems = "center";
-      overlay.style.zIndex = "9999";
-
-      const box = document.createElement("div");
-      box.innerText = "Registration successful!\nClick anywhere to continue.";
-      box.style.background = "orange";
-      box.style.padding = "20px 30px";
-      box.style.borderRadius = "12px";
-      box.style.boxShadow = "0 5px 15px rgba(0,0,0,0.3)";
-      box.style.fontSize = "16px";
-      box.style.textAlign = "center";
-
-      overlay.appendChild(box);
-      document.body.appendChild(overlay);
-
-      const redirect = () => {
-        document.body.removeChild(overlay);
-        navigate("/login");
-      };
-
-      overlay.addEventListener("click", redirect);
-      window.addEventListener("keydown", redirect, { once: true });
+      setShowSuccess(true); // ✅ Show alert
     } catch (error) {
       console.error(error);
       alert("Registration failed. Please check your input.");
@@ -110,6 +80,12 @@ function Register() {
 
   return (
     <>
+      {showSuccess && (
+        <AlertPopup
+          message="Registration successful!"
+          onClose={() => navigate("/login")}
+        />
+      )}
       <Back />
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-6">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -181,14 +157,16 @@ function Register() {
                 <label className="block text-xs font-medium text-gray-700">
                   Role
                 </label>
-                <input
+                <select
                   name="role"
-                  type="text"
-                  value={formData.role}
+                  value={formData.role || "Rider"}
                   onChange={handleChange}
-                  placeholder="Developer, Admin, etc."
                   className="mt-1 block w-full px-3 py-2 border rounded-md text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring focus:ring-orange-200"
-                />
+                >
+                  <option value="Rider">Rider</option>
+                  <option value="Courier">Courier</option>
+                  <option value="Customer">Customer</option>
+                </select>
               </div>
 
               <div className="mt-6">
