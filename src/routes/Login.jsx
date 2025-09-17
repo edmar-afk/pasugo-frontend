@@ -12,13 +12,10 @@ function Login() {
           <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">
             Login to your account
           </h2>
-          <div classNameName="flex flex-col items-center">
-            {" "}
-            <p className="mt-2 text-center text-sm leading-5 text-orange-500 max-w">
-              OR
-            </p>{" "}
+          <div className="flex flex-col items-center justify-center">
+            <p className="mt-2 text-sm leading-5 text-orange-500">OR</p>
             <Link
-              to={"/register"}
+              to="/register"
               className="font-medium mt-2 text-orange-500 hover:text-orange-500 focus:outline-none focus:underline transition ease-in-out duration-150"
             >
               Create a New Acccount

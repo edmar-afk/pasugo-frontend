@@ -1,112 +1,262 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import logo from "../assets/images/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Back from "../components/Back";
+import api from "../assets/api";
+
 function Register() {
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  const [formData, setFormData] = useState({
+    full_name: "", // ✅ added
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+  });
+  const [profilePic, setProfilePic] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleMobileChange = (e) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (!value.startsWith("09")) {
+      value = "09" + value.replace(/^0+/, "");
+    }
+    if (value.length > 11) return;
+    setFormData({ ...formData, username: value });
+  };
+
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePic(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleChooseFile = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) return;
+
+    const data = new FormData();
+    data.append("first_name", formData.full_name);
+    data.append("username", formData.username);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    data.append("role", formData.role);
+    if (profilePic) data.append("profile_picture", profilePic);
+
+    try {
+      await api.post("/api/register/", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // ✅ Custom alert + redirect on click or outside
+      const overlay = document.createElement("div");
+      overlay.style.position = "fixed";
+      overlay.style.top = "0";
+      overlay.style.left = "0";
+      overlay.style.width = "100%";
+      overlay.style.height = "100%";
+      overlay.style.backgroundColor = "rgba(0,0,0,0.5)";
+      overlay.style.display = "flex";
+      overlay.style.justifyContent = "center";
+      overlay.style.alignItems = "center";
+      overlay.style.zIndex = "9999";
+
+      const box = document.createElement("div");
+      box.innerText = "Registration successful!\nClick anywhere to continue.";
+      box.style.background = "orange";
+      box.style.padding = "20px 30px";
+      box.style.borderRadius = "12px";
+      box.style.boxShadow = "0 5px 15px rgba(0,0,0,0.3)";
+      box.style.fontSize = "16px";
+      box.style.textAlign = "center";
+
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+
+      const redirect = () => {
+        document.body.removeChild(overlay);
+        navigate("/login");
+      };
+
+      overlay.addEventListener("click", redirect);
+      window.addEventListener("keydown", redirect, { once: true });
+    } catch (error) {
+      console.error(error);
+      alert("Registration failed. Please check your input.");
+    }
+  };
+
+  const passwordsMatch =
+    formData.password.length > 0 &&
+    formData.confirmPassword.length > 0 &&
+    formData.password === formData.confirmPassword;
+
+  const validMobileNumber =
+    formData.username.length === 11 && formData.username.startsWith("09");
+
   return (
     <>
-    <Back/>
-      <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-6">
-        <div class="sm:mx-auto sm:w-full sm:max-w-md">
-          <img class="mx-auto h-24 w-auto" src={logo} alt="Workflow" />
-          <h2 class="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">
+      <Back />
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-6">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <img className="mx-auto h-24 w-auto" src={logo} alt="Workflow" />
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Register your account
           </h2>
           <div className="flex flex-col items-center">
-            {" "}
-            <p class="mt-2 text-center text-sm leading-5 text-orange-500 max-w">
-              OR
-            </p>{" "}
+            <p className="mt-2 text-center text-xs text-orange-500">OR</p>
             <Link
-              to={'/login'}
-              class="font-medium mt-2 text-orange-500 hover:text-orange-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+              to="/login"
+              className="font-medium mt-2 text-orange-500 hover:text-orange-600"
             >
               Login to Your Account
             </Link>
           </div>
         </div>
 
-        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form>
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
+              {/* ✅ FULL NAME FIELD */}
               <div>
-                <label
-                  for="email"
-                  class="block text-sm font-medium leading-5  text-gray-700"
-                >
+                <label className="block text-xs font-medium text-gray-700">
+                  Full Name
+                </label>
+                <input
+                  name="full_name"
+                  type="text"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                  placeholder="John Doe"
+                  required
+                  className="mt-1 block w-full px-3 py-2 border rounded-md text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring focus:ring-orange-200"
+                />
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-xs font-medium text-gray-700">
+                  Mobile Number
+                </label>
+                <input
+                  name="username"
+                  type="text"
+                  value={formData.username}
+                  onChange={handleMobileChange}
+                  placeholder="09123456789"
+                  required
+                  className="mt-1 block w-full px-3 py-2 border rounded-md text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring focus:ring-orange-200"
+                />
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-xs font-medium text-gray-700">
                   Email address
                 </label>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                  <input
-                    id="email"
-                    name="email"
-                    placeholder="user@example.com"
-                    type="email"
-                    required=""
-                    value=""
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-orange focus:border-orange-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  />
-                  <div class="hidden absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <svg
-                      class="h-5 w-5 text-red-500"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                        clip-rule="evenodd"
-                      ></path>
-                    </svg>
-                  </div>
-                </div>
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="user@example.com"
+                  required
+                  className="mt-1 block w-full px-3 py-2 border rounded-md text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring focus:ring-orange-200"
+                />
               </div>
 
-              <div class="mt-6">
-                <label
-                  for="password"
-                  class="block text-sm font-medium leading-5 text-gray-700"
+              <div className="mt-6">
+                <label className="block text-xs font-medium text-gray-700">
+                  Role
+                </label>
+                <input
+                  name="role"
+                  type="text"
+                  value={formData.role}
+                  onChange={handleChange}
+                  placeholder="Developer, Admin, etc."
+                  className="mt-1 block w-full px-3 py-2 border rounded-md text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring focus:ring-orange-200"
+                />
+              </div>
+
+              <div className="mt-6">
+                <button
+                  type="button"
+                  onClick={handleChooseFile}
+                  className="mt-2 px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 text-xs"
                 >
+                  Choose Profile Picture
+                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleProfilePicChange}
+                  className="hidden"
+                />
+                {preview && (
+                  <div className="mt-4 border border-gray-600">
+                    <img
+                      src={preview}
+                      alt="Profile Preview"
+                      className="w-full h-44 object-cover mx-auto border"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-xs font-medium text-gray-700">
                   Password
                 </label>
-                <div class="mt-1 rounded-md shadow-sm">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required=""
-                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-orange focus:border-orange-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                  />
-                </div>
+                <input
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border rounded-md text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring focus:ring-orange-200"
+                />
               </div>
 
-              <div class="mt-6 flex items-center justify-between">
-                <div class="flex items-center">
-                  <input
-                    id="remember_me"
-                    name="remember"
-                    type="checkbox"
-                    value="1"
-                    class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
-                  />
-                  <label
-                    for="remember_me"
-                    class="ml-2 block text-sm leading-5 text-gray-900"
-                  >
-                    Remember me
-                  </label>
-                </div>
+              <div className="mt-6">
+                <label className="block text-xs font-medium text-gray-700">
+                  Confirm Password
+                </label>
+                <input
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border rounded-md text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring focus:ring-orange-200"
+                />
               </div>
 
-              <div class="mt-6">
-                <span class="block w-full rounded-md shadow-sm">
-                  <button
-                    type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
-                  >
-                    Sign in
-                  </button>
-                </span>
+              <div className="mt-6">
+                <button
+                  type="submit"
+                  disabled={!passwordsMatch || !validMobileNumber}
+                  className={`w-full flex justify-center py-2 px-4 rounded-md text-white ${
+                    passwordsMatch && validMobileNumber
+                      ? "bg-orange-500 hover:bg-orange-600"
+                      : "bg-orange-200 cursor-not-allowed"
+                  }`}
+                >
+                  Register
+                </button>
               </div>
             </form>
           </div>

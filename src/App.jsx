@@ -3,6 +3,7 @@ import Welcome from "./routes/Welcome";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import AdminHome from "./routes/admin/AdminHome";
+import Chat from "./routes/Chat";
 function Logout() {
   localStorage.clear();
   return <Navigate to="/" />;
@@ -18,6 +19,7 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/admin-home" element={<AdminHome />} />
+        <Route path="/chats" element={<Chat />} />
       </Routes>
     </BrowserRouter>
   );

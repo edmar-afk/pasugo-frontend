@@ -8,7 +8,7 @@ function UsersLists({ name }) {
   return (
     <>
       <div className="flex flex-row items-center justify-between px-4 mt-8">
-        <p className="font-semibold text-sm">{name}</p>
+        <p className="font-semibold text-sm text-gray-800">{name}</p>
         <p className="text-xs text-orange-500">View More</p>
       </div>
       <div className="flex overflow-x-auto space-x-6 p-4">
