@@ -7,6 +7,7 @@ import Chat from "./routes/Chat";
 import ClientInfo from "./routes/admin/ClientInfo";
 import Home from "./routes/customers/Home";
 import Products from "./routes/admin/Products";
+import DeliveryMap from "./routes/customers/DeliveryMap";
 function Logout() {
   localStorage.clear();
   return <Navigate to="/" />;
@@ -26,6 +27,7 @@ function App() {
         <Route path="/products" element={<Products />} />
 
         <Route path="/customer-home" element={<Home />} />
+        <Route path="/deliver-map/:userid/:productid" element={<DeliveryMap/>} />
 
         <Route path="/chats" element={<Chat />} />
       </Routes>

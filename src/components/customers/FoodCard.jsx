@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import logo from "../../assets/images/logo.png";
 
 function FoodCard({ product }) {
-  const imageSrc =
-    product.picture && product.picture.trim() !== "" ? product.picture : logo;
+  const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUserData = localStorage.getItem("userData");
     if (storedUserData) {
       try {
         const parsedUserData = JSON.parse(storedUserData);
+        setUserData(parsedUserData);
         console.log("User Data:", parsedUserData);
       } catch (error) {
         console.error("Error parsing userData from localStorage:", error);
@@ -19,6 +21,17 @@ function FoodCard({ product }) {
       console.log("No userData found in localStorage.");
     }
   }, []);
+
+  const handleOrderClick = () => {
+    if (!userData) {
+      alert("You must be logged in to order.");
+      return;
+    }
+    navigate(`/deliver-map/${userData.id}/${product.id}`);
+  };
+
+  const imageSrc =
+    product.picture && product.picture.trim() !== "" ? product.picture : logo;
 
   return (
     <div className="w-[200px] bg-white border border-gray-200 rounded-lg shadow-xl">
@@ -52,6 +65,7 @@ function FoodCard({ product }) {
             ₱{product.price}
           </span>
           <button
+            onClick={handleOrderClick}
             className="text-blue-500 text-sm flex items-center"
             disabled={product.status === "Sold out"}
           >

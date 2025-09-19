@@ -31,6 +31,7 @@ function Login() {
       const {
         access,
         refresh,
+        id,
         username,
         email,
         first_name,
@@ -42,6 +43,7 @@ function Login() {
       const userData = {
         access,
         refresh,
+        id,
         username,
         email,
         first_name,
