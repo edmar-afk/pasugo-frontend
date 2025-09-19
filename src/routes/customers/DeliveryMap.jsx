@@ -13,10 +13,26 @@ const defaultIcon = L.icon({
 function LocateButton({ setPosition }) {
   const map = useMap();
 
-  const handleLocate = () => {
+  const handleLocate = async () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser");
       return;
+    }
+
+    try {
+      if (navigator.permissions) {
+        const permission = await navigator.permissions.query({
+          name: "geolocation",
+        });
+        if (permission.state === "denied") {
+          alert(
+            "Location access is blocked. Please enable it in your browser or OS settings and try again."
+          );
+          return;
+        }
+      }
+    } catch (err) {
+      console.log("Permissions API not supported, continuing...");
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -25,9 +41,13 @@ function LocateButton({ setPosition }) {
         setPosition([latitude, longitude]);
         map.setView([latitude, longitude], 15);
       },
-      () => {
-        alert("Unable to retrieve your location");
-      }
+      (err) => {
+        console.error("Geolocation error:", err);
+        alert(
+          "Unable to retrieve your location. Make sure location services are ON and permission is allowed in your browser."
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 
