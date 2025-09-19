@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -18,6 +18,7 @@ const DefaultIcon = L.icon({
 function DeliveryMap() {
   const [position, setPosition] = useState(null);
   const [accuracy, setAccuracy] = useState(null);
+  const watchIdRef = useRef(null);
 
   const requestLocation = () => {
     if (!("geolocation" in navigator)) {
@@ -44,23 +45,31 @@ function DeliveryMap() {
       { enableHighAccuracy: true }
     );
 
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const { latitude, longitude, accuracy } = pos.coords;
-        setPosition([latitude, longitude]);
-        setAccuracy(accuracy);
-      },
-      (err) => console.error("WatchPosition error:", err),
-      { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
-    );
-
-    return () => navigator.geolocation.clearWatch(watchId);
+    if (watchIdRef.current === null) {
+      watchIdRef.current = navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude, accuracy } = pos.coords;
+          setPosition([latitude, longitude]);
+          setAccuracy(accuracy);
+        },
+        (err) => console.error("WatchPosition error:", err),
+        { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+      );
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (watchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="relative w-full h-[500px]">
       <MapContainer
-        center={position ?? [7.6437, 123.3413]} // Default to Pob. Guipos
+        center={position ?? [7.6437, 123.3413]}
         zoom={15}
         scrollWheelZoom={true}
         className="w-full h-full rounded-xl shadow-xl"
@@ -70,12 +79,10 @@ function DeliveryMap() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Default marker for Pob. Guipos */}
         <Marker position={[7.6437, 123.3413]} icon={DefaultIcon}>
           <Popup>Pob. Guipos, Zamboanga del Sur</Popup>
         </Marker>
 
-        {/* User position marker + accuracy circle */}
         {position && (
           <>
             <Marker position={position} icon={DefaultIcon}>
@@ -91,12 +98,11 @@ function DeliveryMap() {
         )}
       </MapContainer>
 
-      {/* Location button */}
       <button
         onClick={requestLocation}
         className="absolute top-4 right-4 z-[1000] bg-blue-600 text-white px-3 py-2 rounded-xl shadow-lg"
       >
-        Detect My Location
+        Detect My Locationsss
       </button>
     </div>
   );
