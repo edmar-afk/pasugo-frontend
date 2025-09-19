@@ -1,19 +1,17 @@
 import React from "react";
 import Header from "../../components/Header";
 import Greetings from "../../components/admin/Greetings";
-import UsersLists from "../../components/admin/UsersLists";
-
-function AdminHome() {
+import FoodLists from "../../components/customers/FoodLists";
+function Home() {
   return (
     <>
       <Header />
       <div className="mt-24">
         <Greetings />
-        <UsersLists name={"Courier/Rider Lists"} />
-        <UsersLists name={"Customer Lists"} />
+        <FoodLists />
       </div>
     </>
   );
 }
 
-export default AdminHome;
+export default Home;

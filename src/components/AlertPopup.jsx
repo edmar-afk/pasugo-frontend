@@ -7,7 +7,7 @@ function AlertPopup({ message, type = "success", onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[99999]"
       onClick={onClose}
     >
       <div

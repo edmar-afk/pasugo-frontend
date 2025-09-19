@@ -4,6 +4,9 @@ import Login from "./routes/Login";
 import Register from "./routes/Register";
 import AdminHome from "./routes/admin/AdminHome";
 import Chat from "./routes/Chat";
+import ClientInfo from "./routes/admin/ClientInfo";
+import Home from "./routes/customers/Home";
+import Products from "./routes/admin/Products";
 function Logout() {
   localStorage.clear();
   return <Navigate to="/" />;
@@ -19,6 +22,11 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/admin-home" element={<AdminHome />} />
+        <Route path="/client-lists" element={<ClientInfo />} />
+        <Route path="/products" element={<Products />} />
+
+        <Route path="/customer-home" element={<Home />} />
+
         <Route path="/chats" element={<Chat />} />
       </Routes>
     </BrowserRouter>

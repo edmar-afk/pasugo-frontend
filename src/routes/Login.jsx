@@ -51,6 +51,7 @@ function Login() {
       };
 
       localStorage.setItem("userData", JSON.stringify(userData));
+      localStorage.setItem("token", access); // add this line
 
       setAlert({
         show: true,
@@ -66,7 +67,7 @@ function Login() {
         } else if (is_staff) {
           navigate("/staff-home");
         } else {
-          navigate("/home");
+          navigate("/customer-home");
         }
       }, 1000);
     } catch (error) {
