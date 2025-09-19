@@ -1,73 +1,66 @@
 import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
-const defaultIcon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+const DefaultIcon = L.icon({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
 });
 
-function LocateButton({ setPosition }) {
-  const map = useMap();
+function DeliveryMap() {
+  const [position, setPosition] = useState(null);
+  const [accuracy, setAccuracy] = useState(null);
 
-  const handleLocate = async () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
+  const requestLocation = () => {
+    if (!("geolocation" in navigator)) {
+      alert("Geolocation is not supported by your device");
       return;
-    }
-
-    try {
-      if (navigator.permissions) {
-        const permission = await navigator.permissions.query({
-          name: "geolocation",
-        });
-        if (permission.state === "denied") {
-          alert(
-            "Location access is blocked. Please enable it in your browser or OS settings and try again."
-          );
-          return;
-        }
-      }
-    } catch (err) {
-      console.log("Permissions API not supported, continuing...");
     }
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const { latitude, longitude } = pos.coords;
+        const { latitude, longitude, accuracy } = pos.coords;
         setPosition([latitude, longitude]);
-        map.setView([latitude, longitude], 15);
+        setAccuracy(accuracy);
       },
       (err) => {
         console.error("Geolocation error:", err);
-        alert(
-          "Unable to retrieve your location. Make sure location services are ON and permission is allowed in your browser."
-        );
+        if (err.code === err.PERMISSION_DENIED) {
+          alert(
+            "Permission denied. Please enable location access in browser/OS settings."
+          );
+        } else {
+          alert("Unable to retrieve your location. Try again.");
+        }
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: true }
     );
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const { latitude, longitude, accuracy } = pos.coords;
+        setPosition([latitude, longitude]);
+        setAccuracy(accuracy);
+      },
+      (err) => console.error("WatchPosition error:", err),
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
   };
-
-  return (
-    <button
-      onClick={handleLocate}
-      className="absolute top-4 right-4 z-[1000] bg-blue-600 text-white px-3 py-2 rounded-xl shadow-lg"
-    >
-      Detect My Location
-    </button>
-  );
-}
-
-function DeliveryMap() {
-  const [position, setPosition] = useState(null);
 
   return (
     <div className="relative w-full h-[500px]">
       <MapContainer
-        center={[7.6437, 123.3413]} // Pob. Guipos coordinates
+        center={position ?? [7.6437, 123.3413]} // Default to Pob. Guipos
         zoom={15}
         scrollWheelZoom={true}
         className="w-full h-full rounded-xl shadow-xl"
@@ -76,16 +69,35 @@ function DeliveryMap() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[7.6437, 123.3413]} icon={defaultIcon}>
+
+        {/* Default marker for Pob. Guipos */}
+        <Marker position={[7.6437, 123.3413]} icon={DefaultIcon}>
           <Popup>Pob. Guipos, Zamboanga del Sur</Popup>
         </Marker>
+
+        {/* User position marker + accuracy circle */}
         {position && (
-          <Marker position={position} icon={defaultIcon}>
-            <Popup>You are here</Popup>
-          </Marker>
+          <>
+            <Marker position={position} icon={DefaultIcon}>
+              <Popup>
+                You are here
+                <br />
+                Lat: {position[0].toFixed(6)} <br />
+                Lng: {position[1].toFixed(6)}
+              </Popup>
+            </Marker>
+            {accuracy && <Circle center={position} radius={accuracy} />}
+          </>
         )}
-        <LocateButton setPosition={setPosition} />
       </MapContainer>
+
+      {/* Location button */}
+      <button
+        onClick={requestLocation}
+        className="absolute top-4 right-4 z-[1000] bg-blue-600 text-white px-3 py-2 rounded-xl shadow-lg"
+      >
+        Detect My Location
+      </button>
     </div>
   );
 }
