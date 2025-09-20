@@ -97,7 +97,7 @@ export default function Sidebar() {
     },
     {
       label: "My Orders",
-      path: "/customer-orders",
+      path: "/customer-deliveries",
       icon: <DeliveryDiningIcon fontSize="small" />,
     },
     {
@@ -146,12 +146,12 @@ export default function Sidebar() {
   return (
     <aside>
       <div className="top-4 left-4 z-50">
-        <IconButton
+        <div
           onClick={() => setOpen(true)}
-          className="bg-gray-100 rounded-full shadow-lg"
+          className="bg-white rounded-full shadow-lg p-2"
         >
           <MenuIcon className="text-gray-700" fontSize="small" />
-        </IconButton>
+        </div>
       </div>
 
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>

@@ -13,7 +13,7 @@ function FoodCard({ product }) {
       try {
         const parsedUserData = JSON.parse(storedUserData);
         setUserData(parsedUserData);
-        console.log("User Data:", parsedUserData);
+        //console.log("User Data:", parsedUserData);
       } catch (error) {
         console.error("Error parsing userData from localStorage:", error);
       }
