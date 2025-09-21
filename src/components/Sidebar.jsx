@@ -14,6 +14,7 @@ import api from "../assets/api";
 import { getUserInfoFromToken } from "../utils/auth";
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import HailIcon from '@mui/icons-material/Hail';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 export default function Sidebar() {
   const BASE_URL = import.meta.env.VITE_API_URL;
   const [open, setOpen] = useState(false);
@@ -56,19 +57,20 @@ export default function Sidebar() {
   const ownerMenuItems = [
     {
       label: "Owner Home",
-      path: "/owner-home",
+      path: "/admin-home",
       icon: <HomeIcon fontSize="small" />,
     },
     {
-      label: "My Clients",
-      path: "/owner-clients",
-      icon: <PeopleIcon fontSize="small" />,
+      label: "Orders",
+      path: "/owner-orders",
+      icon: <PendingActionsIcon fontSize="small" />,
     },
     {
-      label: "Transactions",
-      path: "/owner-transactions",
-      icon: <PointOfSaleIcon fontSize="small" />,
+      label: "Riders",
+      path: "/rider-lists",
+      icon: <PeopleIcon fontSize="small" />,
     },
+   
   ];
 
   const riderCourierMenuItems = [
