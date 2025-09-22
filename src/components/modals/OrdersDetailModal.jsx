@@ -86,7 +86,6 @@ export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
               onChange={(e) => setRider(e.target.value)}
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring focus:ring-indigo-300 focus:outline-none"
             >
-           
               {riders.map((r) => (
                 <option key={r.id} value={r.first_name}>
                   {r.first_name}
