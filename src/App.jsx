@@ -11,6 +11,8 @@ import DeliveryMap from "./routes/customers/DeliveryMap";
 import CustomerDeliveries from "./routes/customers/CustomerDeliveries";
 import RiderLists from "./routes/owner/RiderLists";
 import Orders from "./routes/owner/Orders";
+import Transportation from "./routes/customers/Transportation";
+import RiderHome from "./routes/rider-courier/RiderHome";
 function Logout() {
   localStorage.clear();
   return <Navigate to="/" />;
@@ -32,10 +34,13 @@ function App() {
         <Route path="/customer-home" element={<Home />} />
         <Route path="/deliver-map/:userid/:productid" element={<DeliveryMap/>} />
         <Route path="/customer-deliveries" element={<CustomerDeliveries />} />
+        <Route path="/customer-transportation" element={<Transportation />} />
         <Route path="/chats" element={<Chat />} />
 
         <Route path="/rider-lists" element={<RiderLists />} />
         <Route path="/owner-orders" element={<Orders />} />
+
+        <Route path="/rider-home" element={<RiderHome />} />
       </Routes>
     </BrowserRouter>
   );

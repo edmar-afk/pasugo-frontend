@@ -15,6 +15,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import SubmitDelivery from "../../components/customers/SubmitDelivery";
 import AlertPopup from "../../components/AlertPopup";
+import Back from "../../components/Back";
 const DefaultIcon = L.icon({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIcon2x,
@@ -86,6 +87,7 @@ function DeliveryMap() {
 
   return (
     <div className="w-screen h-screen relative">
+      <Back isRight={true}/>
       <MapContainer
         center={[7.6437, 123.3413]}
         zoom={15}

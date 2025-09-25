@@ -67,7 +67,7 @@ function Login() {
         } else if (is_superuser && !is_staff) {
           navigate("/owner-home");
         } else if (is_staff) {
-          navigate("/staff-home");
+          navigate("/rider-home");
         } else {
           navigate("/customer-home");
         }

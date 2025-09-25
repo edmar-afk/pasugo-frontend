@@ -13,8 +13,9 @@ function Register() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "",
+    role: "Rider", // default
   });
+
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false); // ✅ State for modal

@@ -12,9 +12,9 @@ import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import { Drawer, IconButton } from "@mui/material";
 import api from "../assets/api";
 import { getUserInfoFromToken } from "../utils/auth";
-import FastfoodIcon from '@mui/icons-material/Fastfood';
-import HailIcon from '@mui/icons-material/Hail';
-import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import HailIcon from "@mui/icons-material/Hail";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
 export default function Sidebar() {
   const BASE_URL = import.meta.env.VITE_API_URL;
   const [open, setOpen] = useState(false);
@@ -70,23 +70,40 @@ export default function Sidebar() {
       path: "/rider-lists",
       icon: <PeopleIcon fontSize="small" />,
     },
-   
   ];
 
-  const riderCourierMenuItems = [
+  const riderMenuItems = [
     {
       label: "Rider Home",
       path: "/rider-home",
       icon: <HomeIcon fontSize="small" />,
     },
     {
-      label: "Deliveries",
-      path: "/rider-deliveries",
+      label: "Transport Passengers",
+      path: "/rider-transports",
+      icon: <TwoWheelerIcon fontSize="small" />,
+    },
+    {
+      label: "Transactions",
+      path: "/rider-transactions",
+      icon: <AccountBalanceWalletIcon fontSize="small" />,
+    },
+  ];
+
+  const courierMenuItems = [
+    {
+      label: "Courier Home",
+      path: "/courier-home",
+      icon: <HomeIcon fontSize="small" />,
+    },
+    {
+      label: "My Deliveries",
+      path: "/courier-deliveries",
       icon: <DeliveryDiningIcon fontSize="small" />,
     },
     {
       label: "Earnings",
-      path: "/rider-earnings",
+      path: "/courier-earnings",
       icon: <AccountBalanceWalletIcon fontSize="small" />,
     },
   ];
@@ -118,9 +135,10 @@ export default function Sidebar() {
     const role = userData?.role?.toLowerCase();
     if (role === "admin") return adminMenuItems;
     if (role === "owner") return ownerMenuItems;
-    if (role === "rider" || role === "courier") return riderCourierMenuItems;
+    if (role === "rider") return riderMenuItems;
+    if (role === "courier") return courierMenuItems;
     if (role === "customer") return customerMenuItems;
-    return []; // fallback if no role is matched
+    return [];
   };
 
   useEffect(() => {
