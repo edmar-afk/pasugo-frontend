@@ -6,15 +6,15 @@ import L from "leaflet";
 import api from "../../assets/api";
 
 export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
-  const [riders, setRiders] = useState([]);
+  const [users, setUsers] = useState([]);
   const [rider, setRider] = useState(order.rider || "");
   const [status, setStatus] = useState(order.status || "");
 
   useEffect(() => {
     api
-      .get("/api/riders/")
-      .then((res) => setRiders(res.data))
-      .catch((err) => console.error("Error fetching riders:", err));
+      .get("/api/clients/") // endpoint that returns all profiles
+      .then((res) => setUsers(res.data))
+      .catch((err) => console.error("Error fetching users:", err));
   }, []);
 
   const handleUpdate = async () => {
@@ -24,7 +24,7 @@ export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
         rider,
       });
       if (typeof onUpdated === "function") {
-        onUpdated(); // ✅ refresh orders list in parent
+        onUpdated();
       }
       onClose();
     } catch (error) {
@@ -34,10 +34,8 @@ export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
 
   const isDisabled = !rider || !status;
 
-  // ✅ Safely parse location
   let lat = null;
   let lng = null;
-
   if (order.location) {
     const matches = order.location.match(/-?\d+(\.\d+)?/g);
     if (matches && matches.length >= 2) {
@@ -53,13 +51,15 @@ export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
     iconAnchor: [12, 41],
   });
 
+  // filter users with role 'Courier'
+  const couriers = users.filter((u) => u.role === "Courier");
+  //console.log(couriers);
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} sx={{ zIndex: 99999 }}>
       <Box className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-lg w-[90%] max-w-md p-6">
         <h2 className="text-lg font-bold text-gray-800 mb-4">Order Details</h2>
 
         <div className="space-y-4">
-          {/* ✅ Only render map if valid lat & lng exist */}
           {lat !== null && lng !== null ? (
             <div className="h-48 w-full rounded-lg overflow-hidden">
               <MapContainer
@@ -80,15 +80,16 @@ export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
           )}
 
           <div>
-            <p className="text-sm font-medium text-gray-600">Assign Rider:</p>
+            <p className="text-sm font-medium text-gray-600">Assign Courier:</p>
             <select
               value={rider}
               onChange={(e) => setRider(e.target.value)}
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring focus:ring-indigo-300 focus:outline-none"
             >
-              {riders.map((r) => (
-                <option key={r.id} value={r.first_name}>
-                  {r.first_name}
+              <option value="">Select Rider</option>
+              {couriers.map((c) => (
+                <option key={c.id} value={c.user.first_name}>
+                  {c.user.first_name}
                 </option>
               ))}
             </select>
@@ -102,6 +103,7 @@ export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring focus:ring-indigo-300 focus:outline-none"
             >
               <option value="">Select Status</option>
+              <option value="Arrived">Paid</option>
               <option value="Pending">Pending</option>
               <option value="Ongoing">Ongoing</option>
             </select>

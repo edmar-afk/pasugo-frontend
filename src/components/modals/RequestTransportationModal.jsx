@@ -111,7 +111,7 @@ export default function RequestTransportationModal({ open, handleClose }) {
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleClose} sx={{ zIndex: 99999 }}>
       <Box className="bg-white rounded-2xl shadow-lg p-6 w-[90%] max-w-lg mx-auto mt-14">
         <div className="h-64 mb-2 rounded-xl overflow-hidden">
           <MapContainer

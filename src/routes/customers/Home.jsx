@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Greetings from "../../components/admin/Greetings";
 import FoodLists from "../../components/customers/FoodLists";
 import RiderHome from "../rider-courier/RiderHome";
+import CourierHome from "../rider-courier/CourierHome";
 import api from "../../assets/api";
 
 function Home() {
@@ -16,7 +17,6 @@ function Home() {
         .get(`/api/profile/${parsedUser.id}/`)
         .then((res) => {
           setProfile(res.data);
-          // console.log("Profile:", res.data);
         })
         .catch((err) => {
           console.error("Error fetching profile:", err);
@@ -30,7 +30,13 @@ function Home() {
       <div className="mt-24">
         <Greetings />
         {profile ? (
-          profile.role === "Rider" ? <RiderHome /> : <FoodLists />
+          profile.role === "Rider" ? (
+            <RiderHome />
+          ) : profile.role === "Courier" ? (
+            <CourierHome />
+          ) : (
+            <FoodLists />
+          )
         ) : (
           <p>Loading...</p>
         )}

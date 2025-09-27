@@ -105,13 +105,25 @@ function TransportationCard() {
           </div>
           {item.status === "Arrived" && (
             <div className="mt-4">
-              {item.price ? (
+              {item.price && (
                 <p className="text-green-600 font-semibold text-xs">
                   Payment Submitted
                 </p>
-              ) : (
-                <ConfirmTransactionModal transportId={item.id} />
               )}
+            </div>
+          )}
+
+          {item.status === "Pending" && item.price && (
+            <div className="mt-4">
+              <p className="text-yellow-600 font-semibold text-xs">
+                Awaiting confirmation
+              </p>
+            </div>
+          )}
+
+          {!item.price && (
+            <div className="mt-4">
+              <ConfirmTransactionModal transportId={item.id} />
             </div>
           )}
         </div>

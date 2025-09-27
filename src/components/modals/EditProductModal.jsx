@@ -80,7 +80,7 @@ function EditProductModal({ productId, onProductUpdated }) {
       >
         Edit
       </p>
-      <Modal open={open} onClose={() => setOpen(false)}>
+      <Modal open={open} onClose={() => setOpen(false)} sx={{ zIndex: 99999 }}>
         <Box className="bg-gray-100 p-6 rounded-xl shadow-xl max-w-md mx-auto mt-20">
           <p className="mb-4 text-gray-700 font-semibold">Edit Product</p>
 

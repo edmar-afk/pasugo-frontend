@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../assets/api";
 import OrdersDetailModal from "../modals/OrdersDetailModal";
 import DeletePopup from "../../components/DeletePopup";
+import ViewPayment from "../modals/ViewPayment";
 
 export default function OrdersLists() {
   const [orders, setOrders] = useState([]);
@@ -75,6 +76,9 @@ export default function OrdersLists() {
                 <p className="mt-1 truncate text-xs text-gray-400">
                   Rider: {order.rider || "Not yet assigned"}
                 </p>
+                <div className="mt-1 truncate text-xs text-gray-400 flex flex-row">
+                  Payment: <ViewPayment paymentImg={order.payment} />
+                </div>
               </div>
             </div>
             <div className="shrink-0 flex flex-col items-end">

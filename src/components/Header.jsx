@@ -7,7 +7,7 @@ import Sidebar from "./Sidebar";
 
 function Header() {
   return (
-    <div className="fixed top-0 left-0 w-full backdrop-blur-xl bg-transparent z-50 flex flex-row p-4 items-center justify-between">
+    <div className="fixed top-0 left-0 w-full backdrop-blur-xl bg-transparent z-[999] flex flex-row p-4 items-center justify-between">
       <div className="flex items-center">
         <img src={logo} className="w-12" alt="" />
         <p className="font-extrabold text-3xl ml-2 text-orange-200">Pasugo</p>

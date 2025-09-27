@@ -6,6 +6,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import TwoWheelerIcon from "@mui/icons-material/TwoWheeler";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import api from "../../assets/api";
+import PaymentDeliveryModal from "../modals/PaymentDeliveryModal";
 
 function DeliveryCard({ delivery, onStatusUpdated }) {
   const product = delivery.products;
@@ -84,11 +85,20 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
               </div>
 
               {/* Rider */}
-              <div className="mt-2 flex items-center gap-2">
-                <TwoWheelerIcon fontSize="small" className="text-gray-600" />
-                <p className="text-sm font-medium text-gray-500 mt-0.5">
-                  {hasConfirmation ? delivery.rider : "Not yet Confirmed"}
-                </p>
+              <div className="mt-2 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <TwoWheelerIcon fontSize="small" className="text-gray-600" />
+                  <p className="text-xs font-medium text-gray-500 mt-0.5">
+                    {hasConfirmation ? delivery.rider : "Not yet Confirmed"}
+                  </p>
+                </div>
+                {delivery.status !== "Cancelled" && (
+                  <PaymentDeliveryModal
+                    deliveryId={delivery.id}
+                    payment={delivery.payment}
+                    onSuccess={onStatusUpdated}
+                  />
+                )}
               </div>
 
               {/* Type & Date */}

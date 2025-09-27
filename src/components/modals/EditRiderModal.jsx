@@ -26,7 +26,7 @@ export default function EditRiderModal({
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} sx={{ zIndex: 99999 }}>
       <Box
         sx={{
           p: 4,

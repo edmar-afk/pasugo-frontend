@@ -75,7 +75,7 @@ function AddProductModal({ onProductAdded }) {
         <AddIcon /> Add Product
       </p>
 
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={handleClose} sx={{zIndex:99999}}>
         <Box
           sx={{
             position: "absolute",
@@ -90,6 +90,7 @@ function AddProductModal({ onProductAdded }) {
             display: "flex",
             flexDirection: "column",
             gap: 2,
+
           }}
         >
           <p className="text-gray-800 font-semibold">Add New Product</p>

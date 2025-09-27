@@ -52,14 +52,16 @@ function ConfirmTransactionModal({ transportId }) {
   return (
     <div>
       {/* Button to open modal */}
-      <p onClick={handleOpen} className="text-blue-500 text-sm font-bold">
+      <p onClick={handleOpen} className="text-blue-500 text-xs font-bold">
         Confirm Transaction
       </p>
 
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={handleClose} sx={{ zIndex: 99999 }}>
         <Box className="absolute top-1/2 left-1/2 w-[95%] -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-lg p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold text-gray-900">Confirm Transaction</h2>
+            <h2 className="text-lg font-bold text-gray-900">
+              Confirm Transaction
+            </h2>
             <IconButton onClick={handleClose}>
               <CloseIcon />
             </IconButton>

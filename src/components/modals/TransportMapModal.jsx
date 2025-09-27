@@ -53,7 +53,7 @@ function TransportMapModal({ transportId }) {
         View Destination
       </p>
 
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={handleClose} sx={{ zIndex: 99999 }}>
         <Box sx={style} className="relative">
           {/* Close button */}
           <button
