@@ -8,7 +8,7 @@ import AlertPopup from "../components/AlertPopup";
 function Register() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     username: "",
@@ -64,7 +64,8 @@ function Register() {
     if (profilePic) data.append("profile_picture", profilePic);
 
     try {
-      const res = await api.post("/api/register/", data, {
+      setLoading(true); // ✅ start loading
+      await api.post("/api/register/", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -73,7 +74,6 @@ function Register() {
       console.error(error);
 
       if (error.response && error.response.data) {
-        // ✅ Directly use backend error message
         if (error.response.data.error) {
           setErrorMessage(error.response.data.error);
         } else {
@@ -82,6 +82,8 @@ function Register() {
       } else {
         setErrorMessage("Something went wrong. Please try again.");
       }
+    } finally {
+      setLoading(false); // ✅ stop loading
     }
   };
 
@@ -251,14 +253,14 @@ function Register() {
               <div className="mt-6">
                 <button
                   type="submit"
-                  disabled={!passwordsMatch || !validMobileNumber}
+                  disabled={!passwordsMatch || !validMobileNumber || loading}
                   className={`w-full flex justify-center py-2 px-4 rounded-md text-white ${
-                    passwordsMatch && validMobileNumber
+                    passwordsMatch && validMobileNumber && !loading
                       ? "bg-orange-500 hover:bg-orange-600"
                       : "bg-orange-200 cursor-not-allowed"
                   }`}
                 >
-                  Register
+                  {loading ? "Registering account..." : "Register"}
                 </button>
               </div>
             </form>
