@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../assets/images/logo.png";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -7,22 +7,40 @@ import TwoWheelerIcon from "@mui/icons-material/TwoWheeler";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import api from "../../assets/api";
 import PaymentDeliveryModal from "../modals/PaymentDeliveryModal";
+import { Link } from "react-router-dom";
 
 function DeliveryCard({ delivery, onStatusUpdated }) {
   const product = delivery.products;
   const hasConfirmation = delivery.rider && delivery.delivery_issued;
   const [loading, setLoading] = useState(false);
+  const [riderId, setRiderId] = useState(null);
+
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const userId = userData?.id;
+
+  useEffect(() => {
+    const fetchRiderId = async () => {
+      if (delivery.rider) {
+        try {
+          const res = await api.get(`/api/chat-user/${delivery.rider}/`);
+          if (res.data && res.data.length > 0) {
+            setRiderId(res.data[0].id);
+          }
+        } catch (err) {
+          console.error("Failed to fetch rider id", err);
+        }
+      }
+    };
+    fetchRiderId();
+  }, [delivery.rider]);
 
   const updateStatus = async (newStatus) => {
     try {
       setLoading(true);
       const response = await api.patch(
         `/api/deliveries/${delivery.id}/update-status/`,
-        {
-          status: newStatus,
-        }
+        { status: newStatus }
       );
-
       if (response.status === 200) {
         onStatusUpdated(response.data);
       }
@@ -67,7 +85,6 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
             </div>
 
             <div className="pt-6">
-              {/* Status */}
               <div className="mb-4 flex items-center justify-between gap-4">
                 <a
                   href="#"
@@ -86,12 +103,31 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
 
               {/* Rider */}
               <div className="mt-2 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <TwoWheelerIcon fontSize="small" className="text-gray-600" />
-                  <p className="text-xs font-medium text-gray-500 mt-0.5">
-                    {hasConfirmation ? delivery.rider : "Not yet Confirmed"}
-                  </p>
-                </div>
+                {riderId ? (
+                  <Link
+                    to={`/room/${userId}/${riderId}`}
+                    className="flex items-center gap-2"
+                  >
+                    <TwoWheelerIcon
+                      fontSize="small"
+                      className="text-gray-600"
+                    />
+                    <p className="text-xs font-medium text-gray-500 mt-0.5">
+                      {delivery.rider}
+                    </p>
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <TwoWheelerIcon
+                      fontSize="small"
+                      className="text-gray-600"
+                    />
+                    <p className="text-xs font-medium text-gray-500 mt-0.5">
+                      {hasConfirmation ? delivery.rider : "Not yet Confirmed"}
+                    </p>
+                  </div>
+                )}
+
                 {delivery.status !== "Cancelled" && (
                   <PaymentDeliveryModal
                     deliveryId={delivery.id}
@@ -116,7 +152,10 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
                   />
                   <p className="text-sm font-medium text-gray-500 mt-0.5">
                     {hasConfirmation
-                      ? delivery.delivery_issued
+                      ? new Date(delivery.delivery_issued).toLocaleDateString(
+                          "en-US",
+                          { month: "short", day: "numeric", year: "numeric" }
+                        )
                       : "Not yet Confirmed"}
                   </p>
                 </li>

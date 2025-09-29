@@ -16,6 +16,9 @@ import RiderHome from "./routes/rider-courier/RiderHome";
 import TransportationServices from "./routes/admin/TransportationServices";
 import RiderTransport from "./routes/rider-courier/RiderTransport";
 import CourierHome from "./routes/rider-courier/CourierHome";
+import Deliveries from "./routes/admin/Deliveries";
+import Transaction from "./routes/admin/Transaction";
+import Room from "./routes/Room";
 function Logout() {
   localStorage.clear();
   return <Navigate to="/" />;
@@ -31,15 +34,25 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         <Route path="/admin-home" element={<AdminHome />} />
+        <Route path="/admin-deliveries" element={<Deliveries />} />
         <Route path="/client-lists" element={<ClientInfo />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/transport-services" element={<TransportationServices />} />
+        <Route
+          path="/transport-services"
+          element={<TransportationServices />}
+        />
+        <Route path="/admin-transactions" element={<Transaction />} />
 
         <Route path="/customer-home" element={<Home />} />
-        <Route path="/deliver-map/:userid/:productid" element={<DeliveryMap/>} />
+        <Route
+          path="/deliver-map/:userid/:productid"
+          element={<DeliveryMap />}
+        />
         <Route path="/customer-deliveries" element={<CustomerDeliveries />} />
         <Route path="/customer-transportation" element={<Transportation />} />
+
         <Route path="/chats" element={<Chat />} />
+        <Route path="/room/:currentUserId/:userId" element={<Room />} />
 
         <Route path="/rider-lists" element={<RiderLists />} />
         <Route path="/owner-orders" element={<Orders />} />

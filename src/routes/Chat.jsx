@@ -1,18 +1,13 @@
-import React from "react";
-import Body from "../components/chats/Body";
-import Receiver from "../components/chats/Receiver";
-import Sender from "../components/chats/Sender";
-import Header from "../components/chats/Header";
-import Send from "../components/chats/Send";
+import Header from "../components/Header";
+import ChatLists from "../components/chats/ChatLists";
 function Chat() {
   return (
     <>
       <Header />
       <div className="mt-24 px-4">
-        <Receiver />
-        <Sender />
+        <p className="text-gray-800 font-bold text-2xl p-4">Messages</p>
+        <ChatLists />
       </div>
-      <Send/>
     </>
   );
 }

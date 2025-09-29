@@ -5,11 +5,17 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import api from "../../assets/api";
 
-export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
+export default function OrdersDetailModal({
+  open,
+  onClose,
+  order,
+  onUpdated,
+  isRider,
+}) {
   const [users, setUsers] = useState([]);
   const [rider, setRider] = useState(order.rider || "");
   const [status, setStatus] = useState(order.status || "");
-
+  console.log("from courier order:", order);
   useEffect(() => {
     api
       .get("/api/clients/") // endpoint that returns all profiles
@@ -79,21 +85,25 @@ export default function OrdersDetailModal({ open, onClose, order, onUpdated }) {
             </p>
           )}
 
-          <div>
-            <p className="text-sm font-medium text-gray-600">Assign Courier:</p>
-            <select
-              value={rider}
-              onChange={(e) => setRider(e.target.value)}
-              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring focus:ring-indigo-300 focus:outline-none"
-            >
-              <option value="">Select Rider</option>
-              {couriers.map((c) => (
-                <option key={c.id} value={c.user.first_name}>
-                  {c.user.first_name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {!isRider && (
+            <div>
+              <p className="text-sm font-medium text-gray-600">
+                Assign Courier:
+              </p>
+              <select
+                value={rider}
+                onChange={(e) => setRider(e.target.value)}
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring focus:ring-indigo-300 focus:outline-none"
+              >
+                <option value="">Select Rider</option>
+                {couriers.map((c) => (
+                  <option key={c.id} value={c.user.first_name}>
+                    {c.user.first_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <p className="text-sm font-medium text-gray-600">Status:</p>

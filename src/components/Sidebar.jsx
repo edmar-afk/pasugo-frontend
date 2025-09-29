@@ -34,7 +34,7 @@ export default function Sidebar() {
     },
     {
       label: "Deliveries",
-      path: "/services",
+      path: "/admin-deliveries",
       icon: <DeliveryDiningIcon fontSize="small" />,
     },
     {
@@ -43,13 +43,8 @@ export default function Sidebar() {
       icon: <FastfoodIcon fontSize="small" />,
     },
     {
-      label: "Payments",
-      path: "/services",
-      icon: <AccountBalanceWalletIcon fontSize="small" />,
-    },
-    {
       label: "Transaction Records",
-      path: "/transactions",
+      path: "/admin-transactions",
       icon: <PointOfSaleIcon fontSize="small" />,
     },
   ];
@@ -93,19 +88,19 @@ export default function Sidebar() {
   const courierMenuItems = [
     {
       label: "Courier Home",
-      path: "/courier-home",
+      path: "/customer-home",
       icon: <HomeIcon fontSize="small" />,
     },
-    {
-      label: "My Deliveries",
-      path: "/courier-deliveries",
-      icon: <DeliveryDiningIcon fontSize="small" />,
-    },
-    {
-      label: "Earnings",
-      path: "/courier-earnings",
-      icon: <AccountBalanceWalletIcon fontSize="small" />,
-    },
+    // {
+    //   label: "My Deliveries",
+    //   path: "/courier-deliveries",
+    //   icon: <DeliveryDiningIcon fontSize="small" />,
+    // },
+    // {
+    //   label: "Earnings",
+    //   path: "/courier-earnings",
+    //   icon: <AccountBalanceWalletIcon fontSize="small" />,
+    // },
   ];
 
   const customerMenuItems = [
@@ -124,11 +119,11 @@ export default function Sidebar() {
       path: "/customer-transportation",
       icon: <HailIcon fontSize="small" />,
     },
-    {
-      label: "Payments History",
-      path: "/customer-payments",
-      icon: <AccountBalanceWalletIcon fontSize="small" />,
-    },
+    // {
+    //   label: "Payments History",
+    //   path: "/customer-payments",
+    //   icon: <AccountBalanceWalletIcon fontSize="small" />,
+    // },
   ];
 
   const getMenuItems = () => {

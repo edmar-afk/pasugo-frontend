@@ -78,7 +78,7 @@ export default function ClientLists() {
                 </p>
               </div>
             </div>
-            <div className="shrink-0 flex flex-col items-end">
+            {/* <div className="shrink-0 flex flex-col items-end">
               <p className="text-sm/6 text-gray-800">{client.role || "N/A"}</p>
               <div className="flex flex-row items-center">
                 <p
@@ -93,7 +93,7 @@ export default function ClientLists() {
                 <span className="text-gray-500 mx-2">|</span>{" "}
                 <p className="text-red-600 text-xs">Delete</p>
               </div>
-            </div>
+            </div> */}
           </li>
         ))
       )}

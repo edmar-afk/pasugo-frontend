@@ -4,22 +4,44 @@ import api from "../../assets/api";
 import TransportMapModal from "../modals/TransportMapModal";
 import TwoWheelerIcon from "@mui/icons-material/TwoWheeler";
 import ConfirmTransactionModal from "../modals/ConfirmTransactionModal";
+import { Link } from "react-router-dom";
+
 function TransportationCard() {
   const [transportations, setTransportations] = useState([]);
+  const [riderIds, setRiderIds] = useState({}); // store riderId per item
+
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const userId = userData?.id;
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData?.id) {
       api
         .get(`/api/transportations/${userData.id}/`)
         .then((res) => {
           setTransportations(res.data);
+
+          // fetch rider ids for each transport item
+          res.data.forEach(async (item) => {
+            if (item.rider) {
+              try {
+                const response = await api.get(`/api/chat-user/${item.rider}/`);
+                if (response.data && response.data.length > 0) {
+                  setRiderIds((prev) => ({
+                    ...prev,
+                    [item.id]: response.data[0].id,
+                  }));
+                }
+              } catch (err) {
+                console.error("Failed to fetch rider id:", err);
+              }
+            }
+          });
         })
         .catch((err) => {
           console.error("Error fetching transportations:", err);
         });
     }
-  }, []);
+  }, [userData?.id]);
 
   const getStatusClasses = (status) => {
     switch (status) {
@@ -64,16 +86,28 @@ function TransportationCard() {
           </div>
 
           <div className="flex flex-row items-center justify-between">
-            <p className="py-3 text-sm">
-              <TwoWheelerIcon fontSize="small" className="text-gray-500" />{" "}
-              {item.rider ? item.rider : "No Rider Yet"}
-            </p>
+            {riderIds[item.id] ? (
+              <Link
+                to={`/room/${userId}/${riderIds[item.id]}`}
+                className="py-3 text-sm flex items-center gap-1 text-blue-600 hover:underline"
+              >
+                <TwoWheelerIcon fontSize="small" className="text-gray-500" />
+                {item.rider}
+              </Link>
+            ) : (
+              <p className="py-3 text-sm flex items-center gap-1">
+                <TwoWheelerIcon fontSize="small" className="text-gray-500" />
+                {item.rider ? item.rider : "No Rider Yet"}
+              </p>
+            )}
+
             <div className="flex flex-row items-center text-xs text-blue-500 cursor-pointer">
               <span className="mt-1 ml-1">
                 <TransportMapModal transportId={item.id} />
               </span>
             </div>
           </div>
+
           <div className="flex flex-row justify-between">
             <div className="flex flex-row items-center border border-gray-400 w-fit py-0.5 px-2 text-xs rounded-xl bg-gray-200">
               <GroupIcon fontSize="small" className="text-gray-500" />
@@ -103,6 +137,7 @@ function TransportationCard() {
               </div>
             </div>
           </div>
+
           {item.status === "Arrived" && (
             <div className="mt-4">
               {item.price && (
