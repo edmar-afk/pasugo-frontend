@@ -4,21 +4,25 @@ import { Link, useNavigate } from "react-router-dom";
 import Back from "../components/Back";
 import api from "../assets/api";
 import AlertPopup from "../components/AlertPopup";
+
 function Register() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     full_name: "",
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "Rider", // default
+    role: "Rider",
   });
 
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [showSuccess, setShowSuccess] = useState(false); // ✅ State for modal
+
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // ✅ For error popup
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,14 +64,24 @@ function Register() {
     if (profilePic) data.append("profile_picture", profilePic);
 
     try {
-      await api.post("/api/register/", data, {
+      const res = await api.post("/api/register/", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setShowSuccess(true); // ✅ Show alert
+      setShowSuccess(true);
     } catch (error) {
       console.error(error);
-      alert("Registration failed. Please check your input.");
+
+      if (error.response && error.response.data) {
+        // ✅ Directly use backend error message
+        if (error.response.data.error) {
+          setErrorMessage(error.response.data.error);
+        } else {
+          setErrorMessage("Registration failed. Please check your input.");
+        }
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -84,9 +98,19 @@ function Register() {
       {showSuccess && (
         <AlertPopup
           message="Registration successful!"
+          type="success" // ✅ Success
           onClose={() => navigate("/login")}
         />
       )}
+
+      {errorMessage && (
+        <AlertPopup
+          message={errorMessage}
+          type="error" // ✅ Error
+          onClose={() => setErrorMessage("")}
+        />
+      )}
+
       <Back />
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 px-6">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
