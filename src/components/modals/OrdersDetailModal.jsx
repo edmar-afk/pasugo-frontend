@@ -95,7 +95,7 @@ export default function OrdersDetailModal({
                 onChange={(e) => setRider(e.target.value)}
                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring focus:ring-indigo-300 focus:outline-none"
               >
-                <option value="">Select Rider</option>
+                <option value="">Select Courier</option>
                 {couriers.map((c) => (
                   <option key={c.id} value={c.user.first_name}>
                     {c.user.first_name}
