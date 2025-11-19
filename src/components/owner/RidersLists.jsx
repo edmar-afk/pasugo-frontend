@@ -56,7 +56,8 @@ export default function RidersLists() {
   };
 
   const filteredRiders = riders.filter(
-    (rider) => rider.profile?.role === "Customer"
+    (rider) =>
+      rider.profile?.role === "Rider" || rider.profile?.role === "Courier"
   );
 
   return (
