@@ -73,6 +73,21 @@ function SubmitDelivery({ requestLocation, location }) {
             Price: ₱{product ? product.price : "Loading..."} (
             {product ? product.type : "Loading..."})
           </p>
+          <div
+            onClick={() =>
+              setAlert({
+                show: true,
+                message: `Please pay ₱${
+                  product ? product.price : ""
+                } upon delivery.`,
+                type: "payment",
+              })
+            }
+            className="text-xs mt-4 flex flex-row items-center justify-between border-t-2 pt-2 border-dashed border-orange-900 cursor-pointer active:scale-95"
+          >
+            <p>Payment Method</p>
+            <p>Cash on Delivery(COD)</p>
+          </div>
 
           <div className="flex flex-row mt-4 justify-center gap-2">
             <button

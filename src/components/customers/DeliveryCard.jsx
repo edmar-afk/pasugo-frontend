@@ -8,12 +8,17 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import api from "../../assets/api";
 import PaymentDeliveryModal from "../modals/PaymentDeliveryModal";
 import { Link } from "react-router-dom";
-
+import AlertPopup from "../AlertPopup";
 function DeliveryCard({ delivery, onStatusUpdated }) {
   const product = delivery.products;
   const hasConfirmation = delivery.rider && delivery.delivery_issued;
   const [loading, setLoading] = useState(false);
   const [riderId, setRiderId] = useState(null);
+  const [alert, setAlert] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const userId = userData?.id;
@@ -75,23 +80,37 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
         <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
           <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
             <div className="h-56 w-full">
-              <a href="#">
+              <div className="relative">
+                <div
+                  onClick={() =>
+                    setAlert({
+                      show: true,
+                      message: `Please pay ₱${
+                        product ? product.price : ""
+                      } upon delivery.`,
+                      type: "payment",
+                    })
+                  }
+                  className="text-xs absolute right-2 top-2 bg-orange-400 py-1.5 px-4 rounded-full cursor-pointer active:scale-95"
+                >
+                  Cash on Delivery
+                </div>
+
                 <img
                   className="mx-auto h-full object-cover"
                   src={product.picture ? product.picture : logo}
                   alt={product.name}
                 />
-              </a>
+              </div>
             </div>
 
             <div className="pt-6">
               <div className="mb-4 flex items-center justify-between gap-4">
-                <a
-                  href="#"
+                <div
                   className="text-lg font-semibold leading-tight text-gray-900 hover:underline"
                 >
                   {product.name}
-                </a>
+                </div>
                 <span
                   className={`me-2 rounded px-2.5 py-0.5 text-xs font-medium ${getStatusClasses(
                     delivery.status
@@ -198,6 +217,14 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
           </div>
         </div>
       </div>
+
+      {alert.show && (
+        <AlertPopup
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert({ ...alert, show: false })}
+        />
+      )}
     </section>
   );
 }
