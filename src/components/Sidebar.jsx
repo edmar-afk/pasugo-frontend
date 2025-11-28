@@ -78,11 +78,11 @@ export default function Sidebar() {
       path: "/rider-transports",
       icon: <TwoWheelerIcon fontSize="small" />,
     },
-    {
-      label: "Transactions",
-      path: "/rider-transactions",
-      icon: <AccountBalanceWalletIcon fontSize="small" />,
-    },
+    // {
+    //   label: "Transactions",
+    //   path: "/rider-transactions",
+    //   icon: <AccountBalanceWalletIcon fontSize="small" />,
+    // },
   ];
 
   const courierMenuItems = [
