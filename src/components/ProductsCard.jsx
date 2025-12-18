@@ -28,10 +28,10 @@ function ProductsCard({
   name,
   picture,
   date_posted,
-  status,
   price,
   type,
   onProductUpdated,
+  quantity,
 }) {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
 
@@ -46,6 +46,8 @@ function ProductsCard({
     }
   };
 
+  const isSoldOut = quantity <= 0;
+
   return (
     <>
       <div className="rounded overflow-hidden shadow-lg flex flex-col">
@@ -55,21 +57,20 @@ function ProductsCard({
             src={picture || "https://via.placeholder.com/500x300?text=No+Image"}
             alt={name}
           />
-          {status && (
+          {
             <div
               className={`text-xs absolute top-0 right-0 px-4 py-2 mt-3 mr-3 rounded ${
-                status === "Sold out"
-                  ? "bg-red-600 text-white"
-                  : "bg-indigo-600 text-white"
+                isSoldOut ? "bg-red-600 text-white" : "bg-indigo-600 text-white"
               }`}
             >
-              {status}
+              {isSoldOut ? "Sold out" : "Available"}
             </div>
-          )}
+          }
         </div>
 
-        <div className="px-6 pt-4 mb-auto">
+        <div className="px-6 pt-4 mb-auto flex flex-row items-center  justify-between">
           <h2 className="font-medium text-lg text-indigo-600">{name}</h2>
+          <p className="font-bold text-sm text-gray-600 ">{quantity} Left</p>
         </div>
 
         <div className="px-6 pb-3 bg-gray-100">

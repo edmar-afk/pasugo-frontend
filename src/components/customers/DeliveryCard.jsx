@@ -106,9 +106,7 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
 
             <div className="pt-6">
               <div className="mb-4 flex items-center justify-between gap-4">
-                <div
-                  className="text-lg font-semibold leading-tight text-gray-900 hover:underline"
-                >
+                <div className="text-lg font-semibold leading-tight text-gray-900 hover:underline">
                   {product.name}
                 </div>
                 <span
@@ -183,7 +181,13 @@ function DeliveryCard({ delivery, onStatusUpdated }) {
               {/* Price & Action Button */}
               <div className="mt-4 flex items-center justify-between gap-4">
                 <p className="text-sm font-extrabold leading-tight text-gray-900">
-                  ₱ {Number(product.price).toLocaleString()}
+                  ₱{" "}
+                  {(
+                    Number(product.price) * Number(delivery.quantity)
+                  ).toLocaleString()}{" "}
+                  <span className="text-xs text-gray-800 font-extralight underline ml-1">
+                    {delivery.quantity} Items Bought
+                  </span>
                 </p>
 
                 {showCancelButton && (

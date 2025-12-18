@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { Modal, Box, Button } from "@mui/material";
+import { Modal, Box, Button, IconButton } from "@mui/material";
 import api from "../../assets/api";
 import AlertPopup from "../AlertPopup";
 import AddIcon from "@mui/icons-material/Add";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 function AddProductModal({ onProductAdded }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [picture, setPicture] = useState(null);
   const [preview, setPreview] = useState(null);
 
@@ -24,6 +27,7 @@ function AddProductModal({ onProductAdded }) {
     setName("");
     setPrice("");
     setType("");
+    setQuantity(1);
     setPicture(null);
     setPreview(null);
   };
@@ -41,6 +45,7 @@ function AddProductModal({ onProductAdded }) {
     formData.append("name", name);
     formData.append("price", price);
     formData.append("type", type);
+    formData.append("quantity", quantity);
     if (picture) {
       formData.append("picture", picture);
     }
@@ -58,10 +63,9 @@ function AddProductModal({ onProductAdded }) {
       });
 
       if (onProductAdded) {
-        onProductAdded(); // ✅ refresh product list
+        onProductAdded();
       }
     } catch (error) {
-      console.error("Error adding product:", error);
       setPopup({ open: true, message: "Failed to add product", type: "error" });
     }
   };
@@ -75,7 +79,7 @@ function AddProductModal({ onProductAdded }) {
         <AddIcon /> Add Product
       </p>
 
-      <Modal open={open} onClose={handleClose} sx={{zIndex:99999}}>
+      <Modal open={open} onClose={handleClose} sx={{ zIndex: 99999 }}>
         <Box
           sx={{
             position: "absolute",
@@ -90,7 +94,6 @@ function AddProductModal({ onProductAdded }) {
             display: "flex",
             flexDirection: "column",
             gap: 2,
-
           }}
         >
           <p className="text-gray-800 font-semibold">Add New Product</p>
@@ -112,7 +115,6 @@ function AddProductModal({ onProductAdded }) {
           />
 
           <select
-            name="type"
             value={type}
             onChange={(e) => setType(e.target.value)}
             className="border border-gray-300 bg-gray-50 text-gray-700 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-gray-400"
@@ -122,6 +124,25 @@ function AddProductModal({ onProductAdded }) {
             <option value="Food">Food</option>
             <option value="Snacks">Snacks</option>
           </select>
+
+          <p className="text-gray-800 mt-8">Quantity</p>
+          <div className="flex items-center justify-between border border-gray-300 bg-gray-50 rounded p-1">
+            <IconButton onClick={() => setQuantity((q) => Math.max(1, q - 1))}>
+              <ChevronLeftIcon />
+            </IconButton>
+
+            <input
+              type="number"
+              value={quantity}
+              min={1}
+              onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+              className="w-20 text-center bg-transparent outline-none text-gray-700"
+            />
+
+            <IconButton onClick={() => setQuantity((q) => q + 1)}>
+              <ChevronRightIcon />
+            </IconButton>
+          </div>
 
           <Button
             variant="outlined"

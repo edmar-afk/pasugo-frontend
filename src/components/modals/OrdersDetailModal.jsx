@@ -123,12 +123,14 @@ export default function OrdersDetailModal({
             <p className="text-sm font-medium text-gray-600">Product :</p>
             <p className="text-base font-semibold text-gray-800">
               {order.products?.name}{" "}
-              <span className="text-xs text-orange-600">
+              <span className="flex flex-row items-center justify-between text-xs text-orange-600">
                 (₱{" "}
                 {order.products?.price
-                  ? Number(order.products.price).toLocaleString()
+                  ? (
+                      Number(order.products.price) * Number(order.quantity)
+                    ).toLocaleString()
                   : "0"}
-                )
+                ) <p className="underline">{order.quantity} Items Bought</p>
               </span>
             </p>
           </div>

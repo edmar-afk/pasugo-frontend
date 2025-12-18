@@ -38,6 +38,7 @@ function ProductLists() {
               price={product.price}
               type={product.type}
               id={product.id}
+              quantity={product.quantity}
               onProductUpdated={fetchProducts} // ✅ pass refresh callback
             />
           ))
